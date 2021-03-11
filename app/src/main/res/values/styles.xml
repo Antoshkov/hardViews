@@ -1,0 +1,62 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="SportRed" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sportRed</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="colorPrimaryDark">@color/sportRed</item>
+    </style>
+    <style name="SportDarkBlue" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sportDarkBlue</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="colorPrimaryDark">@color/sportDarkBlue</item>
+    </style>
+    <style name="SportLightBlue" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sportLightBlue</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="colorPrimaryDark">@color/sportLightBlue</item>
+    </style>
+    <style name="SportPurple" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sportPurple</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="colorPrimaryDark">@color/sportPurple</item>
+    </style>
+    <style name="SportDarkGreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sportDarkGreen</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="colorPrimaryDark">@color/sportDarkGreen</item>
+    </style>
+    <style name="SportLightGreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sportLightGreen</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="colorPrimaryDark">@color/sportLightGreen</item>
+    </style>
+    <style name="SportDesert" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sportDesert</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="colorPrimaryDark">@color/sportDesert</item>
+    </style>
+    <style name="SportCalifornia" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sportCalifornia</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="colorPrimaryDark">@color/sportCalifornia</item>
+    </style>
+    <style name="SportGray" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sportGray</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="colorPrimaryDark">@color/sportGray</item>
+    </style>
+    <style name="SportPink" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sportPink</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="colorPrimaryDark">@color/sportPink</item>
+    </style>
+
+
+
+</resources>
