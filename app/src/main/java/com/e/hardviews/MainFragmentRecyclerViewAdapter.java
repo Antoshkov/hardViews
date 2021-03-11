@@ -28,8 +28,6 @@ public class MainFragmentRecyclerViewAdapter extends RecyclerView.Adapter<MainFr
         this.listener = listener;
     }
 
-    MainFragmentRecyclerViewAdapter(int a){}
-
     public void getActions(List<MyAction> myActionList) {
         myActions = myActionList;
         notifyDataSetChanged();
@@ -48,6 +46,8 @@ public class MainFragmentRecyclerViewAdapter extends RecyclerView.Adapter<MainFr
 
         } else progressDay = percent;
     }
+
+    // some comment
 
     private void progressRunOneTime(final MyViewHolder holder) {
         progress++;
