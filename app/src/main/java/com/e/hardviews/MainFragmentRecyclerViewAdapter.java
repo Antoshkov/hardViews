@@ -47,6 +47,8 @@ public class MainFragmentRecyclerViewAdapter extends RecyclerView.Adapter<MainFr
         } else progressDay = percent;
     }
 
+    // some comment
+
     private void progressRunOneTime(final MyViewHolder holder) {
         progress++;
         holder.progressOneTime.setVisibility(View.VISIBLE);
