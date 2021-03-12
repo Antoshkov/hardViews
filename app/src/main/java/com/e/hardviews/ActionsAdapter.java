@@ -46,6 +46,8 @@ public class ActionsAdapter extends RecyclerView.Adapter<ActionsAdapter.MyViewHo
         } else progressDay = percent;
     }
 
+    // some comment
+
     private void progressRunOneTime(final MyViewHolder holder) {
         progress++;
         holder.progressOneTime.setVisibility(View.VISIBLE);
