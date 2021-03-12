@@ -15,5 +15,7 @@ class ConfirmActionFragment : Fragment() {
 
         return view
     }
+    init {
 
+    }
 }
