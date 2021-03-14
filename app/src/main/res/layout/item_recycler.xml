@@ -88,7 +88,6 @@
             app:circle_stroke_width="12dp"
             app:circle_x_radius="100dp"
             app:circle_y_radius="100dp"
-            app:progress="20"
             app:end_angle="270"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -111,9 +111,16 @@ public class ActionsAdapter extends RecyclerView.Adapter<ActionsAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        if (settingsCheck) holder.btnEdit.setVisibility(View.VISIBLE);
-        else holder.btnEdit.setVisibility(View.GONE);
         final MyAction chosenAction = myActions.get(position);
+        if (settingsCheck) {
+            holder.btnEdit.setVisibility(View.VISIBLE);
+            holder.btnEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.editChosenAction(chosenAction);
+                }
+            });
+        } else holder.btnEdit.setVisibility(View.GONE);
         holder.nameAction.setText(chosenAction.getNameAction());
         holder.iconAction.setBackgroundResource(chosenAction.getIconAction());
         holder.iconActionBlack.setBackgroundResource(chosenAction.getIconActionReverse());
@@ -124,7 +131,6 @@ public class ActionsAdapter extends RecyclerView.Adapter<ActionsAdapter.MyViewHo
                     int part = (100 / chosenAction.getAmountPerDay()) * chosenAction.getCountPressedTimes();
                     int percent = 100 / chosenAction.getAmountPerDay() + part;
                     progressRunOneTime(holder, percent);
-
                     chosenAction.addPressedTimes();
                 }
                 return false;
