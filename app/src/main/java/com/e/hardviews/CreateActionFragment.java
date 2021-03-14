@@ -29,6 +29,7 @@ public class CreateActionFragment extends BaseFragment implements DefaultActionA
     public static final String ACTION_NAME = "actionName";
     public static final String ICON_ACTION = "iconAction";
     public static final String ICON_ACTION_REVERSE = "iconActionReverse";
+    public static final String AMOUNT_OF_DAY = "timesPerDay";
     private CreateActionFragmentViewModel viewModel;
     private DefaultActionAdapter adapter;
     private RecyclerView recyclerView;
@@ -93,7 +94,7 @@ public class CreateActionFragment extends BaseFragment implements DefaultActionA
         bundle.putString(ACTION_NAME, chosenAction.getNameAction());
         bundle.putInt(ICON_ACTION, chosenAction.getIconAction());
         bundle.putInt(ICON_ACTION_REVERSE, chosenAction.getIconActionReverse());
-        navController.navigate(R.id.confirmActionFragment, bundle);
+        navController.navigate(R.id.confirmNewActionFragment, bundle);
     }
 
     @Override
