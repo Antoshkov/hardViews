@@ -17,6 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import static com.e.hardviews.CreateActionFragment.ACTION_NAME;
+import static com.e.hardviews.CreateActionFragment.ICON_ACTION;
+import static com.e.hardviews.CreateActionFragment.ICON_ACTION_REVERSE;
+import static com.e.hardviews.CreateActionFragment.AMOUNT_OF_DAY;
+
 public class MainFragment extends BaseFragment implements View.OnClickListener,
         ThemesAdapterListener, ActionsAdapterListener {
 
@@ -82,7 +87,7 @@ public class MainFragment extends BaseFragment implements View.OnClickListener,
     }
 
     private void closeSettings(){
-        viewModel.deleteActionPlus();
+        viewModel.deleteActionCreator();
         mainItemAdapter.isSettingsOpen(false);
         linearLayoutSettings.setVisibility(View.GONE);
         linearLayoutBackgrounds.setVisibility(View.GONE);
@@ -90,7 +95,7 @@ public class MainFragment extends BaseFragment implements View.OnClickListener,
 
     private void openSettings(){
         mainItemAdapter.isSettingsOpen(true);
-        viewModel.actionPlus();
+        viewModel.actionCreatorItem();
         linearLayoutSettings.setVisibility(View.VISIBLE);
         linearLayoutBackgrounds.setVisibility(View.VISIBLE);
     }
@@ -118,6 +123,17 @@ public class MainFragment extends BaseFragment implements View.OnClickListener,
     @Override
     public void createNewAction() {
         navController.navigate(R.id.createActionFragment);
+        closeSettings();
+    }
+
+    @Override
+    public void editChosenAction(MyAction chosenAction) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ACTION_NAME, chosenAction.getNameAction());
+        bundle.putInt(ICON_ACTION, chosenAction.getIconAction());
+        bundle.putInt(ICON_ACTION_REVERSE, chosenAction.getIconActionReverse());
+        bundle.putInt(AMOUNT_OF_DAY,chosenAction.getAmountPerDay());
+        navController.navigate(R.id.confirmEditActionFragment, bundle);
         closeSettings();
     }
 }

@@ -14,12 +14,10 @@ public class MainModel {
 //    MyActionsDBDao actionsDBDao = db.actionsDBDao();
     private final String CREATE_ACTION = "Add a Task";
     private List<MyAction> actions = new ArrayList<>();
-    private List<DefaultAction> defaultActions = new ArrayList<>();
+    private List<DefaultAction> defaultActions;
 
     public MainModel (){
         defaultActions = createDefaultActions();
-        actions.add(new MyAction("brush teeth", R.drawable.ic_tooth, R.drawable.ic_tooth_reverse, 2));
-        actions.add(new MyAction("walk the dog", R.drawable.ic_dog_side, R.drawable.ic_dog_side_reverse, 3));
     }
 
     public List<MyAction> getActions() {
@@ -44,8 +42,14 @@ public class MainModel {
             }
         }
     }
+
     public void addNewAction(MyAction newAction){
         actions.add(newAction);
+    }
+
+    public void editAction(MyAction chosenAction){
+        for (int i = 0; i < actions.size(); i++){
+        }
     }
 
     private List<DefaultAction> createDefaultActions(){

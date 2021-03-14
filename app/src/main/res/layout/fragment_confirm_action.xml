@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     tools:background="@color/sportDarkGreen"
-    tools:context=".ConfirmActionFragment">
+    tools:context=".BaseConfirmActionFragment">
 
     <TextView
         android:id="@+id/tvConfirmTask"
