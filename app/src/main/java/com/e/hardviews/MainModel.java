@@ -61,6 +61,7 @@ public class MainModel {
             @Override
             public void run() {
                 actionsDBDao.delete(chosenAction);
+
             }
         }.start();
     }

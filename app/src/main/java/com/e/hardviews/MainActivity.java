@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
+
     private final String THEME = "theme";
     private Intent intent;
     private MainViewModel viewModel;
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        new Exception("loh exception");
         preferences = getPreferences(MODE_PRIVATE);
         setTheme(preferences.getInt(THEME, R.style.SportDesert));
         setContentView(R.layout.activity_main);

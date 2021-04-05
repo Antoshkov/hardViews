@@ -63,7 +63,7 @@
         <com.e.hardviews.CircularSeekBar
             android:id="@+id/progressOneTime"
             android:visibility="gone"
-            android:elevation="1dp"
+            android:elevation="2dp"
             tools:visibility="visible"
             android:layout_width="165dp"
             android:layout_height="165dp"
@@ -91,6 +91,7 @@
             app:end_angle="270"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:pointer_alpha_ontouch="100"
             app:pointer_color="#D8DEE3"
             app:pointer_halo_color="#00C3C9CF"

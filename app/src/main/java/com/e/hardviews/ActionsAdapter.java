@@ -111,6 +111,7 @@ public class ActionsAdapter extends RecyclerView.Adapter<ActionsAdapter.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
         final Action chosenAction = actions.get(position);
+
         if (settingsCheck && !chosenAction.isCreator()) {
             holder.btnEdit.setVisibility(View.VISIBLE);
             holder.btnEdit.setOnClickListener(new View.OnClickListener() {
@@ -120,6 +121,7 @@ public class ActionsAdapter extends RecyclerView.Adapter<ActionsAdapter.MyViewHo
                 }
             });
         } else holder.btnEdit.setVisibility(View.GONE);
+
         holder.nameAction.setText(chosenAction.getNameAction());
         holder.iconAction.setBackgroundResource(chosenAction.getIconAction());
         holder.iconActionBlack.setBackgroundResource(chosenAction.getIconActionReverse());
