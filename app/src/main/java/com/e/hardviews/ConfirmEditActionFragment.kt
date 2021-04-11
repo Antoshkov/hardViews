@@ -11,7 +11,7 @@ import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 
-class ConfirmEditActionFragment: BaseConfirmActionFragment() {
+class ConfirmEditActionFragment : BaseConfirmActionFragment() {
 
     private lateinit var btnDelete: Button
 
@@ -20,6 +20,7 @@ class ConfirmEditActionFragment: BaseConfirmActionFragment() {
         initViews(view)
         super.onCreateView(inflater, container, savedInstanceState)
         createDeleteButton()
+        action?.let { progressMain.progress = it.progress }
         action?.let { countTimes = it.amountPerDay }
         action?.let { piecesView.setAmountTimes(it.amountPerDay) }
         tvCountTimes.text = countTimes.toString()
@@ -29,14 +30,14 @@ class ConfirmEditActionFragment: BaseConfirmActionFragment() {
     }
 
     @SuppressLint("ResourceType", "SetTextI18n")
-    private fun createDeleteButton(){
+    private fun createDeleteButton() {
         val set = ConstraintSet()
         btnDelete = Button(context)
         constButton.addView(btnDelete)
         btnDelete.layoutParams = (ConstraintLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
         btnDelete.setBackgroundResource(R.drawable.button_save_task_selector)
         btnDelete.textSize = 22F
-        btnDelete.setPadding(80,45,80,45)
+        btnDelete.setPadding(80, 45, 80, 45)
         btnDelete.text = "DELETE TASK"
         btnDelete.id = 1001
         set.clone(constButton)
@@ -46,7 +47,7 @@ class ConfirmEditActionFragment: BaseConfirmActionFragment() {
 
     override fun onClick(view: View?) {
         super.onClick(view)
-        when (view?.id){
+        when (view?.id) {
             btnSaveTask.id -> {
                 action?.nameAction = actionName.text.toString()
                 action?.amountPerDay = countTimes

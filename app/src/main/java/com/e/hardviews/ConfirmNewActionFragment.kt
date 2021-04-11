@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 
 class ConfirmNewActionFragment : BaseConfirmActionFragment() {
 
@@ -13,12 +14,11 @@ class ConfirmNewActionFragment : BaseConfirmActionFragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         btnSaveTask.setOnClickListener {
             val icon = action!!.iconAction
-            val iconRev = action!!.iconActionReverse
+            val iconReverse = action!!.iconActionReverse
             val type = action!!.actionType
-            viewModel.addNewAction(Action(actionName.text.toString(), icon, iconRev, countTimes, type))
+            viewModel.addNewAction(Action(actionName.text.toString(), icon, iconReverse, countTimes, type))
             navController.navigate(R.id.mainFragment)
         }
         return view
     }
-
 }

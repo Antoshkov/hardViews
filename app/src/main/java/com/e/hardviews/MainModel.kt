@@ -1,25 +1,20 @@
 package com.e.hardviews
 
 import android.util.Log
-import com.e.hardviews.AppDatabase
-import com.e.hardviews.App
-import com.e.hardviews.MyActionsDBDao
-import com.e.hardviews.R
+import androidx.lifecycle.LiveData
 import kotlinx.coroutines.*
-import java.util.ArrayList
+import java.util.*
 
 class MainModel {
 
+    private var db = App.getInstance().database
+    private var actionsDBDao = db.actionsDBDao()
+    private var defaultActions: List<Action>
     private val ioScope = CoroutineScope(Job() + Dispatchers.IO + CoroutineExceptionHandler { coroutineContext, throwable ->
         Log.e("coroutineTag", throwable.message ?: "")
     })
 
-    private var db = App.getInstance().database
-    private var actionsDBDao = db.actionsDBDao()
-    private val CREATE_ACTION = "Add a Task"
-    private lateinit var actions: MutableList<Action>
-    private var defaultActions: List<Action>
-
+    init { defaultActions = createDefaultActions() }
 
     private fun createDefaultActions(): List<Action> {
         val defaultActionList: MutableList<Action> = ArrayList()
@@ -36,73 +31,19 @@ class MainModel {
         return defaultActionList
     }
 
-    private fun insertIntoDB(someAction: Action) {
-        ioScope.launch {
-            actionsDBDao.insert(someAction)
-        }
-    }
+    fun getAllFromDB(): LiveData<List<Action>> = actionsDBDao.all
 
-    private fun deleteFromDB(chosenAction: Action) {
-        ioScope.launch {
-            actionsDBDao.delete(chosenAction)
-        }
-    }
-
-    fun getActions(): List<Action> {
-        return actions
-    }
-
-    fun getDefaultActions(): List<Action> {
-        return defaultActions
-    }
-
-    fun addActionForCreate() {
-        var checkCreator = false
-        for (i in actions.indices) {
-            val action = actions[i]
-            if (action.isCreator) checkCreator = true
-        }
-        if (!checkCreator) {
-            val creator = Action(CREATE_ACTION, R.drawable.ic_plus_thick, R.drawable.ic_plus_thick, 1, 1)
-            creator.isCreator = true
-            actions.add(creator)
-        }
-    }
-
-    fun deleteActionForCreate() {
-        for (i in actions.indices) {
-            val action = actions[i]
-            if (action.nameAction == CREATE_ACTION) {
-                actions.remove(action)
-            }
-        }
-    }
+    fun getDefaultActions(): List<Action> = defaultActions
 
     fun addNewAction(newAction: Action) {
-        insertIntoDB(newAction)
-        ioScope.launch {
-            actions = actionsDBDao.all
-        }
+        ioScope.launch { actionsDBDao.insert(newAction) }
     }
 
     fun editAction(chosenAction: Action) {
-        insertIntoDB(chosenAction)
-        ioScope.launch {
-            actions = actionsDBDao.all
-        }
+        ioScope.launch { actionsDBDao.insert(chosenAction) }
     }
 
     fun deleteAction(action: Action) {
-        deleteFromDB(action)
-        ioScope.launch {
-            actions = actionsDBDao.all
-        }
-    }
-
-    init {
-        ioScope.launch {
-            actions = actionsDBDao.all
-        }
-        defaultActions = createDefaultActions()
+        ioScope.launch { actionsDBDao.delete(action) }
     }
 }

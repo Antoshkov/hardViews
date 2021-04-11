@@ -1,5 +1,6 @@
 package com.e.hardviews
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
@@ -28,6 +29,7 @@ class ActionView : ConstraintLayout {
     private val imgWellDone: ImageView
     private val progressOneTime: ProgressBar
     private val scope = CoroutineScope(Job() + Dispatchers.Main)
+    private lateinit var saveProgressListener: SaveProgressListener
 
     init {
         val view = View.inflate(context, R.layout.item_action, this)
@@ -44,15 +46,20 @@ class ActionView : ConstraintLayout {
         piecesView = view.findViewById(R.id.createPieces)
     }
 
-    private fun startProgressOneTime(){
+    fun attachListener(listener: SaveProgressListener) {
+        this.saveProgressListener = listener
+    }
+
+    private fun startProgressOneTime() {
         val animatorRun = ValueAnimator.ofInt(0, 100)
-        animatorRun.duration = 1500
+        animatorRun.duration = 1200
         animatorRun.addUpdateListener { valueAnimator -> progressOneTime.progress = valueAnimator.animatedValue.toString().toInt() }
         animatorRun.start()
     }
+
     private fun startProgressOneTimeReverse() {
         val animatorRun = ValueAnimator.ofInt(100, 0)
-        animatorRun.duration = 1500
+        animatorRun.duration = 1200
         animatorRun.addUpdateListener { valueAnimator -> progressOneTime.progress = valueAnimator.animatedValue.toString().toInt() }
         animatorRun.start()
     }
@@ -61,14 +68,32 @@ class ActionView : ConstraintLayout {
         progressOneTime.visibility = VISIBLE
         scope.launch {
             startProgressOneTime()
-            delay(1500)
+            delay(1200)
             startProgressOneTimeReverse()
             val animator = ValueAnimator.ofInt(lastProgress, partProgress)
-            animator.duration = 1500
+            animator.duration = 1200
             animator.addUpdateListener { valueAnimator -> progressMain.progress = valueAnimator.animatedValue.toString().toInt() }
-            animator.start()
-            delay(1500)
+            animator.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator?) {}
 
+                override fun onAnimationEnd(p0: Animator?) {
+                    saveProgressListener.animationEnded()
+                }
+
+                override fun onAnimationCancel(p0: Animator?) {}
+
+                override fun onAnimationRepeat(p0: Animator?) {}
+            })
+            animator.start()
         }
     }
+
+    fun resetProgress() {
+        progressMain.resetProgress()
+    }
+
+    interface SaveProgressListener {
+        fun animationEnded()
+    }
 }
+

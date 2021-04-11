@@ -1,6 +1,5 @@
 package com.e.hardviews;
 
-import android.content.Context;
 import android.os.Bundle;
 
 
@@ -10,21 +9,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import static com.e.hardviews.CreateActionFragment.ACTION_NAME;
-import static com.e.hardviews.CreateActionFragment.ICON_ACTION;
-import static com.e.hardviews.CreateActionFragment.ICON_ACTION_REVERSE;
-import static com.e.hardviews.CreateActionFragment.AMOUNT_OF_DAY;
-
 public class MainFragment extends BaseFragment implements View.OnClickListener,
         ThemesAdapterListener, ActionsAdapterListener {
-
+    public static final String CREATOR_ACTION = "Add a Task";
     public static final String CHOSEN_ACTION = "chosenAction";
     private MainViewModel viewModel;
     private ActionsAdapter mainItemAdapter;
@@ -49,7 +42,8 @@ public class MainFragment extends BaseFragment implements View.OnClickListener,
         viewModel.getActionsLiveData().observe(getViewLifecycleOwner(), new Observer<List<Action>>() {
             @Override
             public void onChanged(List<Action> actionList) {
-                mainItemAdapter.getActions(actionList);
+                if (actionList.isEmpty()) mainItemAdapter.addCreatorAction();
+                else mainItemAdapter.getActions(actionList);
             }
         });
         return view;
@@ -82,7 +76,7 @@ public class MainFragment extends BaseFragment implements View.OnClickListener,
     }
 
     private void closeSettings(){
-        viewModel.deleteActionCreator();
+        mainItemAdapter.deleteCreatorAction();
         mainItemAdapter.isSettingsOpen(false);
         linearLayoutSettings.setVisibility(View.GONE);
         linearLayoutBackgrounds.setVisibility(View.GONE);
@@ -90,7 +84,7 @@ public class MainFragment extends BaseFragment implements View.OnClickListener,
 
     private void openSettings(){
         mainItemAdapter.isSettingsOpen(true);
-        viewModel.actionCreatorItem();
+        mainItemAdapter.addCreatorAction();
         linearLayoutSettings.setVisibility(View.VISIBLE);
         linearLayoutBackgrounds.setVisibility(View.VISIBLE);
     }
@@ -126,5 +120,10 @@ public class MainFragment extends BaseFragment implements View.OnClickListener,
         bundle.putParcelable(CHOSEN_ACTION, chosenAction);
         navController.navigate(R.id.confirmEditActionFragment, bundle);
         closeSettings();
+    }
+
+    @Override
+    public void saveProgress(Action chosenAction) {
+        viewModel.editAction(chosenAction);
     }
 }

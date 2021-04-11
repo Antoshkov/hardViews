@@ -19,16 +19,17 @@ abstract class BaseConfirmActionFragment : BaseFragment(), View.OnClickListener 
     protected lateinit var viewModel: MainViewModel
     protected lateinit var editText: EditText
     protected lateinit var iconAction: ImageView
-    protected lateinit var imgClose: ImageView
-    protected lateinit var imgChooseDay: ImageView
+    private lateinit var imgClose: ImageView
+    private lateinit var imgChooseDay: ImageView
     protected lateinit var actionName: TextView
     protected lateinit var tvCountSymbol: TextView
     protected lateinit var tvCountTimes: TextView
     protected lateinit var btnSaveTask: Button
-    protected lateinit var btnPlus: ImageButton
-    protected lateinit var btnMinus: ImageButton
+    private lateinit var btnPlus: ImageButton
+    private lateinit var btnMinus: ImageButton
     protected lateinit var constButton: ConstraintLayout
     protected lateinit var piecesView: CreatePiecesView
+    protected lateinit var progressMain: ProgressBar
     protected var action: Action? = null
     protected var countTimes: Int = 1
 
@@ -37,6 +38,7 @@ abstract class BaseConfirmActionFragment : BaseFragment(), View.OnClickListener 
         val textName = action?.nameAction
         viewModel = ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
         action?.let { iconAction.setBackgroundResource(it.iconAction) }
+        progressMain.resetProgress()
         actionName.text = textName
         piecesView.setPaintColor(getThemeBackgroundColor())
         editText.setText(textName)
@@ -69,6 +71,7 @@ abstract class BaseConfirmActionFragment : BaseFragment(), View.OnClickListener 
         btnPlus = view.findViewById(R.id.btnPlus)
         imgChooseDay = view.findViewById(R.id.imgChooseDay)
         constButton = view.findViewById(R.id.constButton)
+        progressMain = view.findViewById(R.id.progressMain)
     }
 
     private fun getThemeBackgroundColor(): Int {
@@ -86,9 +89,14 @@ abstract class BaseConfirmActionFragment : BaseFragment(), View.OnClickListener 
         override fun afterTextChanged(s: Editable) {}
     }
 
+    private fun setCurrentProgress() {
+        action?.let { progressMain.progress = (100 / countTimes) * it.countPressedTimes }
+    }
+
     private fun timesUp() {
         if (countTimes < 10) {
             countTimes++
+            setCurrentProgress()
             piecesView.setAmountTimes(countTimes)
             tvCountTimes.text = countTimes.toString()
         }
@@ -97,6 +105,7 @@ abstract class BaseConfirmActionFragment : BaseFragment(), View.OnClickListener 
     private fun timesDown() {
         if (countTimes > 1) {
             countTimes--
+            setCurrentProgress()
             piecesView.setAmountTimes(countTimes)
             tvCountTimes.text = countTimes.toString()
         }

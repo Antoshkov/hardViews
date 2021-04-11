@@ -27,15 +27,10 @@ import static com.e.hardviews.MainFragment.CHOSEN_ACTION;
 
 public class CreateActionFragment extends BaseFragment implements DefaultActionAdapterListener, RadioGroup.OnCheckedChangeListener {
 
-    public static final String ACTION_NAME = "actionName";
-    public static final String ICON_ACTION = "iconAction";
-    public static final String ICON_ACTION_REVERSE = "iconActionReverse";
-    public static final String AMOUNT_OF_DAY = "timesPerDay";
     private CreateActionFragmentViewModel viewModel;
     private DefaultActionAdapter adapter;
     private RecyclerView recyclerView;
     private RadioGroup radioGroup;
-    private RadioButton btnAll, btnHealth, btnFood, btnTime, btnBadHabits;
     private EditText etNewAction;
     private ImageView imgClose;
 
@@ -57,7 +52,7 @@ public class CreateActionFragment extends BaseFragment implements DefaultActionA
         etNewAction.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)){
+                if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)) {
                     Toast.makeText(getContext(), "go next", Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -72,53 +67,43 @@ public class CreateActionFragment extends BaseFragment implements DefaultActionA
                 adapter.sendDefaultAction(defaultActionList);
             }
         });
-
-
         return view;
     }
 
-    private void initViews(View view){
+    private void initViews(View view) {
         recyclerView = view.findViewById(R.id.recycler);
         radioGroup = view.findViewById(R.id.radioGroup);
         etNewAction = view.findViewById(R.id.etCreateOwn);
         imgClose = view.findViewById(R.id.imgClose);
-        btnAll = view.findViewById(R.id.radioBtn1);
-        btnHealth = view.findViewById(R.id.radioBtn2);
-        btnFood = view.findViewById(R.id.radioBtn3);
-        btnTime = view.findViewById(R.id.radioBtn4);
-        btnBadHabits = view.findViewById(R.id.radioBtn5);
     }
 
     @Override
     public void onClickChosenAction(Action chosenAction) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(CHOSEN_ACTION, chosenAction);
-//        bundle.putString(ACTION_NAME, chosenAction.getNameAction());
-//        bundle.putInt(ICON_ACTION, chosenAction.getIconAction());
-//        bundle.putInt(ICON_ACTION_REVERSE, chosenAction.getIconActionReverse());
         navController.navigate(R.id.confirmNewActionFragment, bundle);
     }
 
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int id) {
-        switch (id){
-            case R.id.radioBtn1:{
+        switch (id) {
+            case R.id.radioBtn1: {
                 adapter.sortByType(ALL);
                 break;
             }
-            case R.id.radioBtn2:{
+            case R.id.radioBtn2: {
                 adapter.sortByType(HEALTH);
                 break;
             }
-            case R.id.radioBtn3:{
+            case R.id.radioBtn3: {
                 adapter.sortByType(FOOD);
                 break;
             }
-            case R.id.radioBtn4:{
+            case R.id.radioBtn4: {
                 adapter.sortByType(TIME);
                 break;
             }
-            case R.id.radioBtn5:{
+            case R.id.radioBtn5: {
                 adapter.sortByType(BAD_HABITS);
                 break;
             }
