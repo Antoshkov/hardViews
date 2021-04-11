@@ -2,5 +2,6 @@ package com.e.hardviews;
 
 public interface ActionsAdapterListener {
     void createNewAction();
-    void editChosenAction(MyAction chosenAction);
+    void editChosenAction(Action chosenAction);
+    void saveProgress(Action chosenAction);
 }

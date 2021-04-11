@@ -1,106 +1,56 @@
 package com.e.hardviews;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActionsAdapter extends RecyclerView.Adapter<ActionsAdapter.MyViewHolder> {
+import static com.e.hardviews.MainFragment.CREATOR_ACTION;
+
+public class ActionsAdapter extends RecyclerView.Adapter<ActionsAdapter.MyViewHolder> implements ActionView.SaveProgressListener {
 
     private ActionsAdapterListener listener;
-    private List<MyAction> myActions = new ArrayList<>();
+    private List<Action> actions = new ArrayList<>();
     private boolean settingsCheck = false;
-    private int progress = 0;
-    private int progressDay = 0;
-    private final Handler handler = new Handler(Looper.getMainLooper());
+    private Action itemAction;
 
     ActionsAdapter(ActionsAdapterListener listener) {
         this.listener = listener;
     }
 
-    public void getActions(List<MyAction> myActionList) {
-        myActions = myActionList;
+    public void addCreatorAction() {
+        Action creatorAction = new Action(CREATOR_ACTION, R.drawable.ic_plus_thick, R.drawable.ic_plus_thick, 1, 1);
+        creatorAction.setCreator(true);
+        boolean hasCreator = false;
+        for (int i = 0; i < actions.size(); i++) {
+            if (actions.get(i).isCreator()) hasCreator = true;
+        }
+        if (!hasCreator) actions.add(creatorAction);
+        notifyDataSetChanged();
+    }
+
+    public void deleteCreatorAction() {
+        for (int i = 0; i < actions.size(); i++) {
+            Action action = actions.get(i);
+            if (action.getNameAction().equals(CREATOR_ACTION)) actions.remove(action);
+        }
+        if (actions.isEmpty()) addCreatorAction();
+        notifyDataSetChanged();
+    }
+
+    public void getActions(List<Action> actionList) {
+        actions = actionList;
         notifyDataSetChanged();
     }
 
     public void isSettingsOpen(boolean isSettingsOpen) {
         settingsCheck = isSettingsOpen;
     }
-
-    private void progressRun(final MyViewHolder holder, final int percent) {
-        progressDay++;
-        holder.progressMain.setProgress(progressDay);
-        if (progressDay < percent) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    progressRun(holder, percent);
-                }
-            }, 200);
-
-        } else progressDay = percent;
-        if ((progressDay == 100 || progressDay == 99) && progress == 0) {
-            holder.imgWellDone.setVisibility(View.VISIBLE);
-            holder.iconCheckBlack.setVisibility(View.VISIBLE);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    holder.iconCheckBlack.setVisibility(View.GONE);
-                    holder.iconActionBlack.setVisibility(View.VISIBLE);
-                }
-            }, 10);
-        }
-    }
-
-    private void progressRunOneTime(final MyViewHolder holder, final int percent) {
-        progress++;
-        holder.progressOneTime.setVisibility(View.VISIBLE);
-        holder.progressOneTime.setProgress(progress);
-        if (progress < 100) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    progressRunOneTime(holder, percent);
-                }
-            }, 2);
-        } else {
-            progressRunBackOneTime(holder, percent);
-
-        }
-    }
-
-    private void progressRunBackOneTime(final MyViewHolder holder, final int percent) {
-        progress--;
-        holder.iconAction.setVisibility(View.GONE);
-        holder.iconCheck.setVisibility(View.VISIBLE);
-        holder.progressOneTime.setProgress(progress);
-        if (progress > 0) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    progressRunBackOneTime(holder, percent);
-                }
-            }, 2);
-        } else {
-            progress = 0;
-            holder.iconCheck.setVisibility(View.GONE);
-            holder.iconAction.setVisibility(View.VISIBLE);
-            holder.progressOneTime.setVisibility(View.GONE);
-        }
-        progressRun(holder, percent);
-    }
-
 
     @NonNull
     @Override
@@ -111,70 +61,64 @@ public class ActionsAdapter extends RecyclerView.Adapter<ActionsAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        final MyAction chosenAction = myActions.get(position);
-        if (settingsCheck) {
-            holder.btnEdit.setVisibility(View.VISIBLE);
-            holder.btnEdit.setOnClickListener(new View.OnClickListener() {
+        final Action chosenAction = actions.get(position);
+
+        if (settingsCheck && !chosenAction.isCreator()) {
+            holder.actionView.getBtnEdit().setVisibility(View.VISIBLE);
+            holder.actionView.getBtnEdit().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     listener.editChosenAction(chosenAction);
                 }
             });
-        } else holder.btnEdit.setVisibility(View.GONE);
-        holder.nameAction.setText(chosenAction.getNameAction());
-        holder.iconAction.setBackgroundResource(chosenAction.getIconAction());
-        holder.iconActionBlack.setBackgroundResource(chosenAction.getIconActionReverse());
-        holder.container.setOnLongClickListener(new View.OnLongClickListener() {
+        } else holder.actionView.getBtnEdit().setVisibility(View.GONE);
+        holder.actionView.resetProgress();
+        holder.actionView.attachListener(this);
+        holder.actionView.getTvNameAction().setText(chosenAction.getNameAction());
+        holder.actionView.getIconAction().setBackgroundResource(chosenAction.getIconAction());
+        holder.actionView.getIconActionReverse().setBackgroundResource(chosenAction.getIconActionReverse());
+        holder.actionView.getProgressMain().setProgress((100 / chosenAction.getAmountPerDay()) * chosenAction.getCountPressedTimes());
+        holder.actionView.getPiecesView().setAmountTimes(chosenAction.getAmountPerDay());
+        holder.actionView.getContainer().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                if (chosenAction.getCountPressedTimes() < chosenAction.getAmountPerDay()) {
-                    int part = (100 / chosenAction.getAmountPerDay()) * chosenAction.getCountPressedTimes();
-                    int percent = 100 / chosenAction.getAmountPerDay() + part;
-                    progressRunOneTime(holder, percent);
+                if ((chosenAction.getCountPressedTimes() < chosenAction.getAmountPerDay()) && !chosenAction.isCreator()) {
+                    int currentProgress = (100 / chosenAction.getAmountPerDay()) * chosenAction.getCountPressedTimes();
+                    int newProgress = 100 / chosenAction.getAmountPerDay() + currentProgress;
+                    int progress = chosenAction.getProgress();
+                    holder.actionView.startAnimationProgress(progress, newProgress);
                     chosenAction.addPressedTimes();
+                    chosenAction.setProgress(newProgress);
+                    itemAction = chosenAction;
                 }
                 return false;
             }
         });
-        holder.container.setOnClickListener(new View.OnClickListener() {
+        holder.actionView.getContainer().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (chosenAction.isCreator()) {
-                    listener.createNewAction();
-                } else {
-
-                }
+                if (chosenAction.isCreator()) { listener.createNewAction(); }
+                else { }
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return myActions.size();
+        return actions.size();
+    }
+
+    @Override
+    public void animationEnded() {
+        listener.saveProgress(itemAction);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView nameAction;
-        ConstraintLayout container;
-        CircularSeekBar progressMain, progressOneTime;
-        ImageView iconAction, iconCheck, imgWellDone, iconCheckBlack, iconActionBlack;
-        ImageButton btnEdit;
+        ActionView actionView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            nameAction = itemView.findViewById(R.id.nameAction);
-            container = itemView.findViewById(R.id.constContainer);
-            progressMain = itemView.findViewById(R.id.progressMain);
-            progressMain.setIsTouchEnabled(false);
-            progressOneTime = itemView.findViewById(R.id.progressOneTime);
-            iconAction = itemView.findViewById(R.id.iconAction);
-            iconCheck = itemView.findViewById(R.id.checkedWhite);
-            imgWellDone = itemView.findViewById(R.id.wellDone);
-            iconActionBlack = itemView.findViewById(R.id.iconActionReverse);
-            iconCheckBlack = itemView.findViewById(R.id.checkedBlack);
-            btnEdit = itemView.findViewById(R.id.btnEdit);
-
-
+            actionView = itemView.findViewById(R.id.actionView);
         }
     }
 }

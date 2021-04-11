@@ -1,6 +1,5 @@
 package com.e.hardviews;
 
-import android.content.Context;
 import android.os.Bundle;
 
 
@@ -10,21 +9,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import static com.e.hardviews.CreateActionFragment.ACTION_NAME;
-import static com.e.hardviews.CreateActionFragment.ICON_ACTION;
-import static com.e.hardviews.CreateActionFragment.ICON_ACTION_REVERSE;
-import static com.e.hardviews.CreateActionFragment.AMOUNT_OF_DAY;
-
 public class MainFragment extends BaseFragment implements View.OnClickListener,
         ThemesAdapterListener, ActionsAdapterListener {
-
+    public static final String CREATOR_ACTION = "Add a Task";
+    public static final String CHOSEN_ACTION = "chosenAction";
     private MainViewModel viewModel;
     private ActionsAdapter mainItemAdapter;
     private ThemesAdapter backgroundAdapter;
@@ -32,12 +26,6 @@ public class MainFragment extends BaseFragment implements View.OnClickListener,
     private ImageView imgMenu, imgSettings, imgStar, imgCloseSettings,
             imgTimeSettings, imgAnotherSettings, imgProperties;
     private LinearLayout linearLayoutSettings, linearLayoutBackgrounds;
-
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,10 +39,11 @@ public class MainFragment extends BaseFragment implements View.OnClickListener,
         bindOnClickListener();
         viewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         viewModel.getActions();
-        viewModel.getActionsLiveData().observe(getViewLifecycleOwner(), new Observer<List<MyAction>>() {
+        viewModel.getActionsLiveData().observe(getViewLifecycleOwner(), new Observer<List<Action>>() {
             @Override
-            public void onChanged(List<MyAction> myActionList) {
-                mainItemAdapter.getActions(myActionList);
+            public void onChanged(List<Action> actionList) {
+                if (actionList.isEmpty()) mainItemAdapter.addCreatorAction();
+                else mainItemAdapter.getActions(actionList);
             }
         });
         return view;
@@ -87,7 +76,7 @@ public class MainFragment extends BaseFragment implements View.OnClickListener,
     }
 
     private void closeSettings(){
-        viewModel.deleteActionCreator();
+        mainItemAdapter.deleteCreatorAction();
         mainItemAdapter.isSettingsOpen(false);
         linearLayoutSettings.setVisibility(View.GONE);
         linearLayoutBackgrounds.setVisibility(View.GONE);
@@ -95,7 +84,7 @@ public class MainFragment extends BaseFragment implements View.OnClickListener,
 
     private void openSettings(){
         mainItemAdapter.isSettingsOpen(true);
-        viewModel.actionCreatorItem();
+        mainItemAdapter.addCreatorAction();
         linearLayoutSettings.setVisibility(View.VISIBLE);
         linearLayoutBackgrounds.setVisibility(View.VISIBLE);
     }
@@ -119,7 +108,6 @@ public class MainFragment extends BaseFragment implements View.OnClickListener,
         viewModel.sendNewTheme(theme);
     }
 
-
     @Override
     public void createNewAction() {
         navController.navigate(R.id.createActionFragment);
@@ -127,13 +115,15 @@ public class MainFragment extends BaseFragment implements View.OnClickListener,
     }
 
     @Override
-    public void editChosenAction(MyAction chosenAction) {
+    public void editChosenAction(Action chosenAction) {
         Bundle bundle = new Bundle();
-        bundle.putString(ACTION_NAME, chosenAction.getNameAction());
-        bundle.putInt(ICON_ACTION, chosenAction.getIconAction());
-        bundle.putInt(ICON_ACTION_REVERSE, chosenAction.getIconActionReverse());
-        bundle.putInt(AMOUNT_OF_DAY,chosenAction.getAmountPerDay());
+        bundle.putParcelable(CHOSEN_ACTION, chosenAction);
         navController.navigate(R.id.confirmEditActionFragment, bundle);
         closeSettings();
+    }
+
+    @Override
+    public void saveProgress(Action chosenAction) {
+        viewModel.editAction(chosenAction);
     }
 }
