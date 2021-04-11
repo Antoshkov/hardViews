@@ -1,5 +1,6 @@
 package com.e.hardviews;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -9,50 +10,34 @@ import java.util.List;
 public class MainViewModel extends ViewModel {
 
     private MainModel model = new MainModel();
-    private List<Action> actions = new ArrayList<>();
-    private MutableLiveData<List<Action>> actionsLiveData = new MutableLiveData<>();
+    private LiveData<List<Action>> actionsLiveData;
     private MutableLiveData<Integer> themeLiveData = new MutableLiveData<>();
 
     public MutableLiveData<Integer> getThemeLiveData() {
         return themeLiveData;
     }
 
-    public MutableLiveData<List<Action>> getActionsLiveData() {
+    public LiveData<List<Action>> getActionsLiveData() {
         return actionsLiveData;
     }
 
-    public void getActions(){
-        actions = model.getActions();
-        if (!actions.isEmpty()){
-            actionsLiveData.setValue(actions);
-        } else {
-            model.addActionForCreate();
-            getActions();
-        }
+    public void getActions() {
+        actionsLiveData = model.getAllFromDB();
     }
 
-    public void actionCreatorItem(){
-        model.addActionForCreate();
-        getActions();
-    }
-
-    public void deleteActionCreator(){
-        model.deleteActionForCreate();
-        getActions();
-    }
-
-    public void addNewAction(Action action){
+    public void addNewAction(Action action) {
         model.addNewAction(action);
-        deleteActionCreator();
-        getActions();
     }
 
-    public void editAction(Action action){
+    public void editAction(Action action) {
         model.editAction(action);
-        getActions();
     }
 
-    public void sendNewTheme(int theme){
+    public void deleteAction(Action action) {
+        model.deleteAction(action);
+    }
+
+    public void sendNewTheme(int theme) {
         themeLiveData.setValue(theme);
     }
 

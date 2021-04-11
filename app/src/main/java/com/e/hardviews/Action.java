@@ -8,19 +8,30 @@ import androidx.room.PrimaryKey;
 
 @Entity
 public class Action implements Parcelable {
+    public static final int ALL = 0;
+    public static final int HEALTH = 101;
+    public static final int FOOD = 201;
+    public static final int TIME = 31;
+    public static final int BAD_HABITS = 666;
+
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String nameAction;
     private boolean isCreator;
-    private int iconAction, iconActionReverse, amountPerDay;
+    private int iconAction;
+    private int iconActionReverse;
+    private int amountPerDay;
+    private int actionType;
+    private int progress;
     private int countPressedTimes = 0;
 
 
-    public Action(String nameAction, int iconAction, int iconActionReverse, int amountPerDay){
+    public Action(String nameAction, int iconAction, int iconActionReverse, int amountPerDay, int actionType){
         this.iconAction = iconAction;
         this.iconActionReverse = iconActionReverse;
         this.nameAction = nameAction;
         this.amountPerDay = amountPerDay;
+        this.actionType = actionType;
     }
 
     protected Action(Parcel in) {
@@ -31,6 +42,8 @@ public class Action implements Parcelable {
         iconActionReverse = in.readInt();
         amountPerDay = in.readInt();
         countPressedTimes = in.readInt();
+        actionType = in.readInt();
+        progress = in.readInt();
     }
 
     public static final Creator<Action> CREATOR = new Creator<Action>() {
@@ -44,6 +57,14 @@ public class Action implements Parcelable {
             return new Action[size];
         }
     };
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
 
     public void addPressedTimes(){
         countPressedTimes++;
@@ -71,6 +92,14 @@ public class Action implements Parcelable {
 
     public void setCountPressedTimes(int countPressedTimes) {
         this.countPressedTimes = countPressedTimes;
+    }
+
+    public int getActionType() {
+        return actionType;
+    }
+
+    public void setActionType(int actionType) {
+        this.actionType = actionType;
     }
 
     public void setCreator(boolean creator) {
@@ -119,5 +148,7 @@ public class Action implements Parcelable {
         parcel.writeInt(iconActionReverse);
         parcel.writeInt(amountPerDay);
         parcel.writeInt(countPressedTimes);
+        parcel.writeInt(actionType);
+        parcel.writeInt(progress);
     }
 }
